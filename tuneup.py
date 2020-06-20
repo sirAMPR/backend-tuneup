@@ -5,11 +5,12 @@
 Use the timeit and cProfile libraries to find bad code.
 """
 
-__author__ = "???"
+__author__ = "aradcliff"
 
 import cProfile
 import pstats
 import functools
+import timeit
 
 
 def profile(func):
@@ -49,8 +50,11 @@ def find_duplicate_movies(src):
 
 def timeit_helper():
     """Part A: Obtain some profiling measurements using timeit."""
-    # YOUR CODE GOES HERE
-    pass
+    t = timeit.Timer('main()')
+    r, n = 7, 3
+    result = t.repeat(repeat=r, number=n)
+    min_of_averages = min(map(lambda x: x / 3, result))
+    return f"Best time across {r} repeats of {n} runs per repeat: {min_of_averages} sec"
 
 
 def main():
