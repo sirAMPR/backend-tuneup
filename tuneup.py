@@ -11,15 +11,26 @@ import cProfile
 import pstats
 import functools
 import timeit
+import io
+from pstats import SortKey
 
 
 def profile(func):
     """A cProfile decorator function that can be used to
     measure performance.
     """
-    # Be sure to review the lesson material on decorators.
-    # You need to understand how they are constructed and used.
-    raise NotImplementedError("Complete this decorator function")
+    def wrapper(*args, **kwargs):
+        pr = cProfile.Profile()
+        pr.enable()
+        result = func(*args, **kwargs)
+        pr.disable()
+        s = io.StringIO()
+        sortby = SortKey.CUMULATIVE
+        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps.print_stats()
+        print(s.getvalue())
+        return result
+    return wrapper
 
 
 def read_movies(src):
@@ -37,6 +48,7 @@ def is_duplicate(title, movies):
     return False
 
 
+@profile
 def find_duplicate_movies(src):
     """Returns a list of duplicate movies from a src list."""
     movies = read_movies(src)
@@ -51,9 +63,9 @@ def find_duplicate_movies(src):
 def timeit_helper():
     """Part A: Obtain some profiling measurements using timeit."""
     t = timeit.Timer('main()')
-    r, n = 7, 3
+    r, n = 7, 3  # repeat, number constants
     result = t.repeat(repeat=r, number=n)
-    min_of_averages = min(map(lambda x: x / 3, result))
+    min_of_averages = min(map(lambda x: x / n, result))
     return f"Best time across {r} repeats of {n} runs per repeat: {min_of_averages} sec"
 
 
