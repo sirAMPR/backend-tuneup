@@ -77,6 +77,7 @@ def main():
     result = find_duplicate_movies('movies.txt')
     print(f'Found {len(result)} duplicate movies:')
     print('\n'.join(result))
+    print(timeit_helper())
 
 
 if __name__ == '__main__':
